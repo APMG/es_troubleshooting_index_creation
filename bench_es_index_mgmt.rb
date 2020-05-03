@@ -17,6 +17,17 @@ index_configs = (1..20).map do |i|
   {name: name, body: config}
 end
 
+bulk_indices = (1..20).map do |i|
+  name = "test_#{i}_index_#{i}"
+  type = "test"
+  id = 1
+  data = {
+    "title": "foo"
+  }
+
+ ({ "index": { _index: name, _type: type, _id: id, data: data}})
+end
+
 def delete_my_indices!
   client = Elasticsearch::Client.new(url: 'http://localhost:9200')
   all_indices = client.indices.get_alias().keys
@@ -26,6 +37,8 @@ end
 
 
 Benchmark.ips do |x|
+  # Create a template in advance
+  client.indices.put_template(name: 'template_1', body: { index_patterns: 'test_*', settings: { 'number_of_shards': 1, 'index.number_of_replicas' => 0 } })
   # Configure the number of seconds used during
   # the warmup phase (default 2) and calculation phase (default 5)
   x.config(:time => 15, :warmup => 5)
@@ -35,6 +48,23 @@ Benchmark.ips do |x|
     index_configs.each do |conf|
       client.indices.create(index: conf[:name], body: conf[:body])
     end
+  end
+
+  x.report("20 indices wait:0") do
+    delete_my_indices!
+    index_configs.each do |conf|
+      client.indices.create(index: conf[:name], body: conf[:body], wait_for_active_shards: 0)
+    end
+  end
+
+  x.report("use bulk api") do
+    delete_my_indices!
+    client.bulk(body: bulk_indices)
+  end
+
+  x.report("use bulk api wait:0") do
+    delete_my_indices!
+    client.bulk(body: bulk_indices, wait_for_active_shards: 0)
   end
 
   # Compare the iterations per second of the various reports!
