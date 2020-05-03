@@ -21,19 +21,25 @@ Run each command in a separate terminal window
 
 ### ES 5.6.16
 
+```
 docker run --rm -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" -e "bootstrap.memory_lock=true" -e "xpack.security.enabled=false" --ulimit "memlock=-1:-1" -e ES_JAVA_OPTS="-Xms4g -Xmx4g" docker.elastic.co/elasticsearch/elasticsearch:5.6.16
+```
 
 `bundle exec ruby bench_es_index_mgmt.rb && bundle exec ruby bench_es_index_mgmt.rb && bundle exec ruby bench_es_index_mgmt.rb`
 
 ### ES 7.6.2
 
+```
 docker run --rm -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" -e "bootstrap.memory_lock=true" -e "xpack.security.enabled=false" --ulimit "memlock=-1:-1" -e ES_JAVA_OPTS="-Xms4g -Xmx4g" docker.elastic.co/elasticsearch/elasticsearch:6.8.8
+```
 
 `bundle exec ruby bench_es_index_mgmt.rb && bundle exec ruby bench_es_index_mgmt.rb && bundle exec ruby bench_es_index_mgmt.rb`
 
 ### ES 7.6.2
 
+```
 docker run --rm -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" -e "bootstrap.memory_lock=true" -e "xpack.security.enabled=false" --ulimit "memlock=-1:-1" -e ES_JAVA_OPTS="-Xms4g -Xmx4g" docker.elastic.co/elasticsearch/elasticsearch:7.6.2
+```
 
 `bundle exec ruby bench_es_index_mgmt.rb && bundle exec ruby bench_es_index_mgmt.rb && bundle exec ruby bench_es_index_mgmt.rb`
 
